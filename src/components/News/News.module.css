@@ -1,0 +1,45 @@
+.newsCard {
+  background-color: rgba(255, 255, 255, 0.4); 
+    border-radius: 16px;
+    padding: 10px 32px 20px 32px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+  }
+  
+  .newsCard:hover {
+    transform: translateY(-5px);
+    background-color: rgba(255, 255, 255, 0.8); 
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  }
+  
+  .newsCard h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #1d3b2a;
+  }
+  
+  .newsCard p {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 10px;
+  }
+  
+  .newsCard a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #618B35;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .newsCard a:hover {
+    background-color: #4a6b2b;
+    color: #fff;
+    transform: scale(1.03);
+  }

@@ -1,0 +1,47 @@
+.AuthPage {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 200px;
+    overflow: hidden;
+  }
+  
+  
+.component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Контейнер для кнопок (якщо потрібно) */
+.buttonsContainer {
+  display: flex;
+  gap: 32px;
+}
+
+/* Загальний стиль кнопок */
+.authButton {
+  padding: 12px 18px;
+  border-radius: 0.375rem; /* rounded */
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Активна кнопка */
+.active {
+  background-color: #618B35; 
+  border: none;
+  color: white;
+}
+
+/* Неактивна кнопка */
+.inactive {
+  background-color: rgba(83, 187, 19, 0.3);
+  color: black;
+}

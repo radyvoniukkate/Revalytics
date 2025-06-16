@@ -1,0 +1,136 @@
+.Filter {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 20px;
+  }
+  .RegionDetails {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: visible; /* Додай, якщо є проблеми з обрізанням */
+  }
+  
+  .Chart {
+    width: 100%;
+    height: 400px; /* Спробуй задати явну висоту */
+    min-height: 300px; /* Щоб графік не зникав при малих розмірах */
+    overflow: visible; /* Додай, щоб уникнути обрізання */
+  }
+  
+  .Selector {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+  }
+  
+  .Label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  .FiltersRow {
+    display: flex;
+    gap: 20px; 
+    flex-direction: row;
+  }
+  
+  .Selector {
+    min-width: 200px; /* мінімальна ширина для селекторів */
+    flex-grow: 1;
+  }
+  
+  .YearsBlock {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    width: 100%;
+    align-items: center;
+  }
+  
+  
+  .Select {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .Select:focus {
+    outline: none;
+    border-color: #618B35;
+    box-shadow: 0 0 0 2px rgba(83, 187, 19, 0.2);
+  }
+  
+  .AddButton {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #618B35;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .AddButton:hover {
+    background-color: #4a6b2b;
+    color: #fff;
+    transform: scale(1.03);
+  }
+  
+  .SelectWrapper {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    gap:6px;
+  }
+  
+  .Select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+  }
+  
+  .SelectWrapper::after {
+    content: '';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  
+  .YearSelectBlock {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  
+  .RemoveButton {
+    background: transparent;
+    border: none;
+    color: red;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 2px;
+    padding: 1px;
+  }
+  
+  .RemoveButton:hover {
+    color: darkred;
+  }
+  

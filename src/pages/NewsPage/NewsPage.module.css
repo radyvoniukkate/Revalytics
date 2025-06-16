@@ -1,0 +1,28 @@
+.NewsPage {
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 200px;
+    z-index: 0;
+    overflow-x: hidden;
+  }
+
+  .NewsPage::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; 
+    background-color: rgba(255, 255, 255, 0.5); 
+    z-index: 1;
+  }
+  
+  .NewsPage > * {
+    position: relative;
+    z-index: 2;
+  }
+  

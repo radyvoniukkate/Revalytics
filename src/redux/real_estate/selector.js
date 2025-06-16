@@ -1,0 +1,27 @@
+export const selectAnalytics = (state) => state.realEstate.analytics;
+export const selectRegionDetails = (state) => state.realEstate.regionDetails;
+export const selectLoading = (state) => state.realEstate.loading;
+export const selectError = (state) => state.realEstate.error;
+export const selectSuccessMessage = (state) => state.realEstate.successMessage;
+export const regions = (state) => state.realEstate.regionsList;
+export const years = (state) =>  state.realEstate.yearsList;
+export const selectedRegion = (state) =>  state.realEstate.selectedRegion;
+export const selectedYear = (state) =>  state.realEstate.selectedYear;
+export const selectAnalyticsData = (state) => state.realEstate.analyticsData;
+export const selectAnalyticsLoading = (state) => state.realEstate.loading;
+export const selectAnalyticsError = (state) => state.realEstate.error;
+export const selectAvailableMonths = (state) => state.realEstate?.months || [];
+export const selectMonthsLoading = (state) => state.months.loading;
+export const selectMonthsError = (state) => state.months.error;
+export const selectUsdRates = (state) => state.realEstate.usdRates;
+export const selectPriceForecast = (state) => state.realEstate.priceForecast;
+export const selectForecastLoading = (state) => state.realEstate.forecastLoading;
+export const selectForecastError = (state) => state.realEstate.forecastError;
+export const cities = (state) => state.realEstate.citiesList; // або як він там називається
+export const selectAuthStatus = (state) => state.realEstate.status;
+export const selectAuthError = (state) => state.realEstate.error;
+export const selectAuthMessage = (state) => state.realEstate.message;
+export const selectAuthToken = (state) => state.realEstate.token;
+export const selectIsAuthenticated = (state) => !!state.realEstate.token;
+export const selectIsLoggedIn = (state) => state.realEstate.isLoggedIn;
+export const selectUser = (state) => state.realEstate.userInfo;
