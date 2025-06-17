@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { setLoading, setError, setRegionDetails } from "./slice";
 
-const BASE_URL = "https://revalytics-backend.onrender.com/";
+const BASE_URL = "https://revalytics-backend.onrender.com";
 
 // Отримати аналітику по регіонах за рік
 export const fetchAnalyticsByRegion = createAsyncThunk(
