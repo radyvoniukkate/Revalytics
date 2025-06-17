@@ -12,7 +12,7 @@ const ChartSelector = ({ selectedChart, onSelect }) => {
         }}
       >
         <img
-          src="/public/graph_16235270.png"
+          src="/graph_16235270.png"
           alt="Аналітика"
           width="100"
           height="100"
@@ -28,7 +28,7 @@ const ChartSelector = ({ selectedChart, onSelect }) => {
         }}
       >
         <img
-          src="/public/area-chart_9129677.png"
+          src="/area-chart_9129677.png"
           alt="Деталі регіону"
           width="100"
           height="100"
@@ -44,7 +44,7 @@ const ChartSelector = ({ selectedChart, onSelect }) => {
         }}
       >
         <img
-          src="/public/map_14093240.png"
+          src="/map_14093240.png"
           alt="Географічна карта"
           width="100"
           height="100"
@@ -59,7 +59,7 @@ const ChartSelector = ({ selectedChart, onSelect }) => {
         }}
       >
         <img
-          src="/public/chart_14195563.png"
+          src="/chart_14195563.png"
           alt="Граф"
           width="100"
           height="100"
@@ -75,7 +75,7 @@ const ChartSelector = ({ selectedChart, onSelect }) => {
         }}
       >
         <img
-          src="/public/line-graphic_13340584.png"
+          src="/line-graphic_13340584.png"
           alt="Кореляція"
           width="100"
           height="100"
@@ -90,7 +90,7 @@ const ChartSelector = ({ selectedChart, onSelect }) => {
         }}
       >
         <img
-          src="/public/cloud_16633805.png"
+          src="/cloud_16633805.png"
           alt="Прогноз"
           width="100"
           height="100"

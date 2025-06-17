@@ -50,7 +50,7 @@ const Header = () => {
           className={({ isActive }) => (isActive ? css.active : css.text)}
         >
           <img
-            src="/public/avatar_16845277.png"
+            src="/avatar_16845277.png"
             alt="Авторизація"
             className={css.img}
           />
