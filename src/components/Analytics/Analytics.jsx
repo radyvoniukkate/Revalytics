@@ -132,7 +132,7 @@ const Analytics = () => {
 
   const translatedAnalytics = analytics?.map((item) => ({
     ...item,
-    regionUA: RegionTranslations[item.region] || item.region,
+    regionUA: RegionTranslations[item.location] || item.location,
   }));
 
   const tooltipLabelFormatter = (label) => RegionTranslations[label] || label;
@@ -180,9 +180,6 @@ const Analytics = () => {
       dispatch(fetchAnalyticsByYearAndMonth(params));
     }
   }, [dispatch, selectedPurpose, selectedLevel, selectedYear, selectedMonth]);
-  console.log(analytics.map((el) => el.region));
-
-
   const handleSave = async () => {
     const chartContainer = chartRef.current;
     if (!chartContainer) {
@@ -281,10 +278,8 @@ const Analytics = () => {
           >
             Кількість об'єктів
           </div>
-          <div ref={chartRef}>
+          <div ref={chartRef} style={{ width: "100%", height: 400 }}>
             <ResponsiveContainer
-              width="100%"
-              height={400}
               className={css.container}
             >
               <BarChart

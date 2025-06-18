@@ -225,11 +225,6 @@ const UsdCorrelationGraph = () => {
     endMonth,
   ]);
 
-  const translatedOptions = useMemo(
-    () => (level === "regions" ? RegionTranslations : {}),
-    [level]
-  );
-
   const locationOptions = useMemo(() => {
     const source = level === "regions" ? regions : cities;
     return source.map((name) => ({

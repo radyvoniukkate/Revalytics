@@ -29,6 +29,45 @@ const levels = [
   { value: "cities", label: "Міста" },
 ];
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (!active || !payload || !payload.length) return null;
+
+  return (
+    <div
+      style={{
+        pointerEvents: "auto",
+        backgroundColor: "white",
+        border: "1px solid #ccc",
+        padding: "10px",
+        maxWidth: "300px",
+        maxHeight: "200px",
+        overflowY: "auto",
+        zIndex: 9999,
+        position: "relative", // важливо, щоб не загубився у layout
+        fontSize: "14px",
+        lineHeight: "1.4",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
+      }}
+    >
+      <p style={{ marginBottom: "0.5rem", fontWeight: "bold" }}>
+        Дата: {label}
+      </p>
+      <hr style={{ margin: "0.5rem 0" }} />
+      {payload.map((entry, index) => {
+        const name = RegionTranslations[entry.name] || entry.name;
+        return (
+          <div key={index} style={{ marginBottom: "4px" }}>
+            <span style={{ color: entry.color, fontWeight: 600 }}>{name}:</span>{" "}
+            {entry.value} грн
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+
+
 const Dropdown = ({ options, selected, onSelect, label, disabled }) => {
   const [open, setOpen] = React.useState(false);
   const ref = React.useRef();
@@ -292,11 +331,15 @@ const TimeLineGraph = () => {
         <p>Завантаження...</p>
       ) : (
         <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={data}>
+          <LineChart
+            data={data}
+            margin={{ top: 20, right: 30, left: 50, bottom: 20 }}
+          >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" interval={0} />
             <YAxis />
-            <Tooltip formatter={(value) => [`${value}`, `ціна`]} />
+            <Tooltip content={<CustomTooltip />} />
+
             {data.length > 0 &&
               Object.keys(data[0])
                 .filter((key) => key !== "date")
