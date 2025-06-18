@@ -1,13 +1,4 @@
-.AnalyticPage {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 200px;
-  overflow: hidden;
-}
+
 
 .AnalyticPage::before {
   content: "";
@@ -21,4 +12,28 @@
 
 .AnalyticPage > * {
   position: relative;
+}
+
+.AnalyticPage {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .AnalyticPage {
+    padding: 40px 100px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .AnalyticPage {
+    padding: 40px 200px;
+  }
 }

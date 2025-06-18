@@ -176,7 +176,10 @@ const Forecast = () => {
         <>
           <div ref={chartContainerRef} style={{ width: "100%", height: 400 }}>
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
+              <LineChart
+                data={chartData}
+                margin={{ top: 20, right: 30, left: 50, bottom: 20 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="date"

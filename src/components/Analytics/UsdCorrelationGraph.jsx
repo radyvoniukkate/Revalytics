@@ -298,34 +298,7 @@ const UsdCorrelationGraph = () => {
           disabled={!endYear}
         />
       </div>
-      <div>
-        <div
-          style={{
-            position: "absolute",
-            left: 60,
-            top: "50%",
-            transform: "translate(-100%, -50%) rotate(-90deg)",
-            color: "#0F3714",
-            fontWeight: "bold",
-          }}
-        >
-          Середня ціна (грн)
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            left: 1200,
-            top: "50%",
-            transform: "translate(-100%, -50%) rotate(90deg)",
-            color: "#3D86DB",
-            fontWeight: "bold",
-            whiteSpace: "nowrap",
-            width: "max-content",
-          }}
-        >
-          Курс USD
-        </div>
-      </div>
+      
       {loading ? (
         <p>Завантаження...</p>
       ) : (
