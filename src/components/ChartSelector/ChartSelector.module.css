@@ -15,3 +15,16 @@
     gap: 32px;
     margin-bottom: 40px;
 }
+
+@media (max-width: 1100px) and (min-width: 768px) {
+    .btn {
+      gap: 10px;
+    }
+  
+    .ChartSelector {
+      gap: 24px;
+      flex-wrap: wrap; /* Якщо елементів багато, можна дозволити перенесення */
+      justify-content: center;
+    }
+  }
+  
