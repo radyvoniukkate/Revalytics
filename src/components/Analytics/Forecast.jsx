@@ -38,6 +38,7 @@ const LEVEL_OPTIONS = [
 
 const Forecast = () => {
   const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.realEstate.isLoggedIn);
   const [purpose, setPurpose] = useState("buy");
   const [level, setLevel] = useState("regions");
   const [selectedItem, setSelectedItem] = useState(null);
@@ -115,10 +116,11 @@ const Forecast = () => {
   const chartContainerRef = useRef(null);
 
   const handleSaveChart = async () => {
-    if (!chartContainerRef.current) {
+    if (!chartContainerRef.current || chartData.length === 0) {
       alert("Графік ще не готовий до збереження.");
       return;
     }
+
     try {
       const dataUrl = await htmlToImage.toPng(chartContainerRef.current);
 
@@ -139,7 +141,7 @@ const Forecast = () => {
       alert("Не вдалося зберегти графік.");
     }
   };
-
+  
   return (
     <div>
       <div
@@ -169,6 +171,14 @@ const Forecast = () => {
           label={level === "regions" ? "регіон" : "місто"}
           disabled={locationOptions.length === 0}
         />
+        {isLoggedIn && (
+          <button
+            onClick={handleSaveChart}
+            style={{ padding: "0.5rem 1rem" }}
+          >
+            Зберегти графік
+          </button>
+        )}
       </div>
       {loading ? (
         <p>Завантаження...</p>
@@ -213,12 +223,6 @@ const Forecast = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
-          <button
-            onClick={handleSaveChart}
-            style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}
-          >
-            Зберегти графік як зображення
-          </button>
         </>
       )}
     </div>

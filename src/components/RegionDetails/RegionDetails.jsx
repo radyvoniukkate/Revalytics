@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import * as htmlToImage from "html-to-image";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchRegionDetails,
@@ -29,6 +30,14 @@ import css from "./RegionDetails.module.css";
 import RegionTranslations from "/public/regionTranslations.js";
 
 const step = 100;
+
+const SAVED_CHARTS_KEY = "savedCharts";
+
+const saveChartToLocal = (chart) => {
+  const existing = JSON.parse(localStorage.getItem(SAVED_CHARTS_KEY)) || [];
+  localStorage.setItem(SAVED_CHARTS_KEY, JSON.stringify([...existing, chart]));
+};
+
 const monthNames = [
   "Січень",
   "Лютий",
@@ -43,7 +52,6 @@ const monthNames = [
   "Листопад",
   "Грудень",
 ];
-
 
 const COLORS = [
   "#0F3714",
@@ -74,6 +82,7 @@ const RegionDetails = () => {
   const [selectedLevel, setSelectedLevel] = useState("regions");
   const [selectedLocation, setSelectedLocation] = useState(""); // регіон або місто
   const [selectedYears, setSelectedYears] = useState([]);
+  const isLoggedIn = useSelector((state) => state.realEstate.isLoggedIn);
 
   const details = useSelector(selectRegionDetails);
   const loading = useSelector(selectLoading);
@@ -87,7 +96,6 @@ const RegionDetails = () => {
     dispatch(fetchCitiesList());
     dispatch(fetchYearsList());
   }, [dispatch]);
-  
 
   // Автоматично вибираємо перший рік, якщо немає вибраних
   useEffect(() => {
@@ -171,7 +179,6 @@ const RegionDetails = () => {
       return point;
     });
   }, [details, selectedYears]);
-  
 
   // Керування роками (додавання/зміна)
   const addYear = () => {
@@ -185,11 +192,43 @@ const RegionDetails = () => {
     newSelectedYears[index] = newYear;
     setSelectedYears(newSelectedYears);
   };
-  
+
   // Визначаємо список для локації (регіони чи міста)
   const locationOptions =
     selectedLevel === "regions" ? regionsList : citiesList;
-    console.log("chartData:", chartData);
+  console.log("chartData:", chartData);
+
+  const chartContainerRef = useRef(null);
+
+  const handleSaveChart = async () => {
+    if (!chartContainerRef.current || chartData.length === 0) {
+      alert("Графік ще не готовий до збереження.");
+      return;
+    }
+
+    try {
+      const dataUrl = await htmlToImage.toPng(chartContainerRef.current);
+
+      const chartObject = {
+        id: `${selectedPurpose}-${selectedLevel}-${selectedLocation}-${Date.now()}`,
+        title: `Графік об'єктів: (${
+          selectedPurpose === "buy" ? "Продаж" : "Оренда"
+        }, ${selectedLevel === "regions" ? "Регіон" : "Місто"}: ${
+          RegionTranslations[selectedLocation] || selectedLocation
+        })`,
+        purpose: selectedPurpose,
+        level: selectedLevel,
+        location: selectedLocation,
+        image: dataUrl,
+        timestamp: new Date().toISOString(),
+      };
+      saveChartToLocal(chartObject);
+      alert("Графік у вигляді зображення збережено!");
+    } catch {
+      alert("Не вдалося зберегти графік.");
+    }
+  };
+  
 
   return (
     <div className={css.RegionDetails}>
@@ -289,43 +328,54 @@ const RegionDetails = () => {
             </button>
           )}
         </div>
+        {isLoggedIn && (
+          <button
+            onClick={handleSaveChart}
+            className={css.SaveButton}
+            style={{ marginBottom: "1rem", width: 200 }}
+          >
+            Зберегти графік
+          </button>
+        )}
       </div>
 
       <div className={css.Chart}>
         {selectedLocation && selectedYears.length > 0 && (
-          <ResponsiveContainer>
-            <AreaChart data={chartData}>
-              <XAxis
-                dataKey="month"
-                tickFormatter={(tick) => monthNames[tick - 1] || ""}
-              />
-              <YAxis>
-                <Label
-                  value="Кількість об'єктів"
-                  angle={-90}
-                  position="insideLeft"
-                  offset={5}
+          <div ref={chartContainerRef} style={{ width: "100%", height: 400 }}>
+            <ResponsiveContainer style={{ width: "100%", height: "100%" }}>
+              <AreaChart data={chartData}>
+                <XAxis
+                  dataKey="month"
+                  tickFormatter={(tick) => monthNames[tick - 1] || ""}
                 />
-              </YAxis>
-              <Tooltip
-                formatter={(value, name) => [value, name]}
-                labelFormatter={(label) => monthNames[label - 1] || ""}
-              />
-              {selectedYears.map((year, idx) => {
-                const color = COLORS[idx % COLORS.length];
-                return (
-                  <Area
-                    key={year}
-                    type="monotone"
-                    dataKey={year}
-                    stroke={color}
-                    fill={color}
-                    fillOpacity={0.2}
+                <YAxis>
+                  <Label
+                    value="Кількість об'єктів"
+                    angle={-90}
+                    position="insideLeft"
+                    offset={5}
                   />
-                );
-              })}
-            </AreaChart>
-          </ResponsiveContainer>
+                </YAxis>
+                <Tooltip
+                  formatter={(value, name) => [value, name]}
+                  labelFormatter={(label) => monthNames[label - 1] || ""}
+                />
+                {selectedYears.map((year, idx) => {
+                  const color = COLORS[idx % COLORS.length];
+                  return (
+                    <Area
+                      key={year}
+                      type="monotone"
+                      dataKey={year}
+                      stroke={color}
+                      fill={color}
+                      fillOpacity={0.2}
+                    />
+                  );
+                })}
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         )}
 
         {(loading || error) && (

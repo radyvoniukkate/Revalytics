@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
+import * as htmlToImage from "html-to-image";
 import {
   LineChart,
   Line,
@@ -18,6 +19,13 @@ import {
 } from "../../redux/real_estate/operators";
 import RegionTranslations from "/public/regionTranslations.js";
 import dayjs from "dayjs";
+
+const SAVED_CHARTS_KEY = "savedCharts";
+
+const saveChartToLocal = (chart) => {
+  const existing = JSON.parse(localStorage.getItem(SAVED_CHARTS_KEY)) || [];
+  localStorage.setItem(SAVED_CHARTS_KEY, JSON.stringify([...existing, chart]));
+};
 
 const purposes = [
   { value: "buy", label: "Продаж" },
@@ -151,6 +159,7 @@ const Dropdown = ({ options, selected, onSelect, label, disabled }) => {
 const TimeLineGraph = () => {
   const dispatch = useDispatch();
 
+  const isLoggedIn = useSelector((state) => state.realEstate.isLoggedIn);
   const [purpose, setPurpose] = useState("buy");
   const [level, setLevel] = useState("regions");
   const [startYear, setStartYear] = useState(null);
@@ -269,6 +278,36 @@ const TimeLineGraph = () => {
       }));
     }, [level, regions, cities]);
     
+  const chartContainerRef = useRef(null);
+    
+  const handleSaveChart = async () => {
+    if (!chartContainerRef.current || data.length === 0) {
+      alert("Графік ще не готовий до збереження.");
+      return;
+    }
+
+    try {
+      const dataUrl = await htmlToImage.toPng(chartContainerRef.current);
+
+      const chartObject = {
+        id: `${purpose}-${level}-${selectedItem}-${Date.now()}`,
+        title: `Графік прогнозу: (${purpose === "buy" ? "Продаж" : "Оренда"}, ${
+          level === "regions" ? "Регіон" : "Місто"
+        }: ${RegionTranslations[selectedItem] || selectedItem})`,
+        purpose,
+        level,
+        location: selectedItem,
+        image: dataUrl,
+        timestamp: new Date().toISOString(),
+      };
+      saveChartToLocal(chartObject);
+      alert("Графік у вигляді зображення збережено!");
+    } catch {
+      alert("Не вдалося зберегти графік.");
+    }
+  };
+  
+  
   return (
     <div>
       <div
@@ -325,37 +364,44 @@ const TimeLineGraph = () => {
           label="місяць кінця"
           disabled={!endYear}
         />
+        {isLoggedIn && (
+          <button onClick={handleSaveChart} style={{ padding: "0.5rem 1rem" }}>
+            Зберегти графік
+          </button>
+        )}
       </div>
 
       {loading ? (
         <p>Завантаження...</p>
       ) : (
-        <ResponsiveContainer width="100%" height={400}>
-          <LineChart
-            data={data}
-            margin={{ top: 20, right: 30, left: 50, bottom: 20 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" interval={0} />
-            <YAxis />
-            <Tooltip content={<CustomTooltip />} />
+        <div ref={chartContainerRef} style={{ width: "100%", height: "400px" }}>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart
+              data={data}
+              margin={{ top: 20, right: 30, left: 50, bottom: 20 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" interval={0} />
+              <YAxis />
+              <Tooltip content={<CustomTooltip />} />
 
-            {data.length > 0 &&
-              Object.keys(data[0])
-                .filter((key) => key !== "date")
-                .filter((key) => !selectedItem || key === selectedItem)
-                .map((key, idx) => (
-                  <Line
-                    key={key}
-                    type="monotone"
-                    dataKey={key}
-                    stroke={`hsl(${(idx * 137.5) % 360}, 70%, 50%)`}
-                    name={translatedOptions[key] || key}
-                    dot={false}
-                  />
-                ))}
-          </LineChart>
-        </ResponsiveContainer>
+              {data.length > 0 &&
+                Object.keys(data[0])
+                  .filter((key) => key !== "date")
+                  .filter((key) => !selectedItem || key === selectedItem)
+                  .map((key, idx) => (
+                    <Line
+                      key={key}
+                      type="monotone"
+                      dataKey={key}
+                      stroke={`hsl(${(idx * 137.5) % 360}, 70%, 50%)`}
+                      name={translatedOptions[key] || key}
+                      dot={false}
+                    />
+                  ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       )}
     </div>
   );

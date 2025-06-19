@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
+import * as htmlToImage from "html-to-image";
 import {
   ResponsiveContainer,
   LineChart,
@@ -20,6 +21,13 @@ import {
 } from "../../redux/real_estate/operators";
 import RegionTranslations from "/public/regionTranslations.js";
 import dayjs from "dayjs";
+
+const SAVED_CHARTS_KEY = "savedCharts";
+
+const saveChartToLocal = (chart) => {
+  const existing = JSON.parse(localStorage.getItem(SAVED_CHARTS_KEY)) || [];
+  localStorage.setItem(SAVED_CHARTS_KEY, JSON.stringify([...existing, chart]));
+};
 
 const purposes = [
   { value: "buy", label: "Продаж" },
@@ -121,6 +129,7 @@ const UsdCorrelationGraph = () => {
   const [endYear, setEndYear] = useState(null);
   const [endMonth, setEndMonth] = useState(null);
   const [data, setData] = useState([]);
+  const isLoggedIn = useSelector((state) => state.realEstate.isLoggedIn);
 
   const years = useSelector((state) => state.realEstate.yearsList);
   const months = useSelector((state) => state.realEstate.months);
@@ -236,6 +245,36 @@ const UsdCorrelationGraph = () => {
   {
     console.log("RENDERED DATA:", data);
   }
+  
+  const chartContainerRef = useRef(null);
+  
+  const handleSaveChart = async () => {
+    if (!chartContainerRef.current || data.length === 0) {
+      alert("Графік ще не готовий до збереження.");
+      return;
+    }
+
+    try {
+      const dataUrl = await htmlToImage.toPng(chartContainerRef.current);
+
+      const chartObject = {
+        id: `${purpose}-${level}-${selectedItem}-${Date.now()}`,
+        title: `Графік прогнозу: (${purpose === "buy" ? "Продаж" : "Оренда"}, ${
+          level === "regions" ? "Регіон" : "Місто"
+        }: ${RegionTranslations[selectedItem] || selectedItem})`,
+        purpose,
+        level,
+        location: selectedItem,
+        image: dataUrl,
+        timestamp: new Date().toISOString(),
+      };
+      saveChartToLocal(chartObject);
+      alert("Графік у вигляді зображення збережено!");
+    } catch {
+      alert("Не вдалося зберегти графік.");
+    }
+  };
+  
 
   return (
     <div>
@@ -292,65 +331,70 @@ const UsdCorrelationGraph = () => {
           label="місяць кінця"
           disabled={!endYear}
         />
+        {isLoggedIn && (
+          <button onClick={handleSaveChart} style={{ padding: "0.5rem 1rem" }}>
+            Зберегти графік
+          </button>
+        )}
       </div>
-      
+
       {loading ? (
         <p>Завантаження...</p>
       ) : (
-        <div style={{ width: "100%", height: "400px" }}>
-  <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{ top: 20, right: 60, left: 60, bottom: 40 }} // ← Додано відступи
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="date"
-              type="category"
-              label={{
-                value: "Дата",
-                position: "insideBottom",
-                offset: -5,
-              }}
-            />
-            <YAxis
-              yAxisId="left"
-              dataKey="price"
-              orientation="left"
-              tickFormatter={(v) => `${v.toLocaleString()}₴`}
-            />
-            <YAxis
-              yAxisId="right"
-              dataKey="usd"
-              orientation="right"
-              tickFormatter={(v) => `${v.toFixed(2)}$`}
-            />
-            <Tooltip
-              formatter={(value, name) =>
-                name === "usd"
-                  ? [`${value.toFixed(2)}$`, "Курс USD"]
-                  : [`${value.toLocaleString()}₴`, "Ціна житла"]
-              }
-            />
-            <Legend verticalAlign="top" height={36} />
-            <Line
-              yAxisId="left"
-              type="monotone"
-              dataKey="price"
-              stroke="#0F3714"
-              dot={false}
-              name="Ціна житла"
-            />
-            <Line
-              yAxisId="right"
-              type="monotone"
-              dataKey="usd"
-              stroke="#3D86DB"
-              dot={false}
-              name="Курс USD"
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        <div ref={chartContainerRef} style={{ width: "100%", height: "400px" }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={data}
+              margin={{ top: 20, right: 60, left: 60, bottom: 40 }} // ← Додано відступи
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="date"
+                type="category"
+                label={{
+                  value: "Дата",
+                  position: "insideBottom",
+                  offset: -5,
+                }}
+              />
+              <YAxis
+                yAxisId="left"
+                dataKey="price"
+                orientation="left"
+                tickFormatter={(v) => `${v.toLocaleString()}₴`}
+              />
+              <YAxis
+                yAxisId="right"
+                dataKey="usd"
+                orientation="right"
+                tickFormatter={(v) => `${v.toFixed(2)}$`}
+              />
+              <Tooltip
+                formatter={(value, name) =>
+                  name === "usd"
+                    ? [`${value.toFixed(2)}$`, "Курс USD"]
+                    : [`${value.toLocaleString()}₴`, "Ціна житла"]
+                }
+              />
+              <Legend verticalAlign="top" height={36} />
+              <Line
+                yAxisId="left"
+                type="monotone"
+                dataKey="price"
+                stroke="#0F3714"
+                dot={false}
+                name="Ціна житла"
+              />
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="usd"
+                stroke="#3D86DB"
+                dot={false}
+                name="Курс USD"
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       )}
     </div>

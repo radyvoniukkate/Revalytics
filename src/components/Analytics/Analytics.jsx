@@ -248,6 +248,11 @@ const Analytics = () => {
           label="місяць"
           disabled={!selectedYear || months.length === 0}
         />
+        {isLoggedIn && (
+          <button onClick={handleSave} style={{ marginTop: "1rem" }}>
+            Зберегти графік
+          </button>
+        )}
       </div>
 
       {selectedPurpose && selectedYear && selectedLevel && (
@@ -279,9 +284,7 @@ const Analytics = () => {
             Кількість об'єктів
           </div>
           <div ref={chartRef} style={{ width: "100%", height: 400 }}>
-            <ResponsiveContainer
-              className={css.container}
-            >
+            <ResponsiveContainer className={css.container}>
               <BarChart
                 data={translatedAnalytics}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -307,12 +310,6 @@ const Analytics = () => {
               </BarChart>
             </ResponsiveContainer>
           </div>
-
-          {isLoggedIn && (
-            <button onClick={handleSave} style={{ marginTop: "1rem" }}>
-              Зберегти графік
-            </button>
-          )}
         </>
       )}
     </div>
