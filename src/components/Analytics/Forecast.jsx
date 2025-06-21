@@ -58,7 +58,7 @@ const Forecast = () => {
     if (typeof selectedItem !== "string" || selectedItem.trim() === "") return;
     async function fetchAllMonths() {
       let combinedData = [];
-      for (let month = 1; month <= 5; month++) {
+      for (let month = 1; month <= 6; month++) {
         const resultAction = await dispatch(
           fetchAnalyticsByYearAndMonth({
             purpose,
